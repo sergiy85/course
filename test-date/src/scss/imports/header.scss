@@ -1,0 +1,157 @@
+@import './libs/_variables';
+@import './libs/mixins';
+@import './libs/normalize';
+@import './libs/grid';
+
+.header{
+  width: 100%;
+  background-color: $background-color;
+}
+.inner-header{
+  padding: 0 30px;
+  @include flexBetween ();
+}
+.wrap-container, 
+.account-list,
+.account-item, 
+.account-credit{
+  @include flexBetween ();
+}
+
+.logo-wrap{
+  margin-right: 39px;
+}
+.search-wrap{
+  display: flex;
+  align-items: center;
+}
+.form-control{
+  @include btnService();
+  @include placeholder {
+    color: $color-grey;
+    font-size: 12px;
+  }
+  padding: 5px;
+  width: 360px;
+
+  @include medium() {
+    width: 200px;
+  }
+  @include small() {
+    width: 160px;
+  }
+}
+.btn-search{
+  @include size(21px, 15px);
+  @include btnService();
+}
+.account-mail{
+  @include size(21px, 15px);
+  @include btnService();
+  position: relative;
+  & >.badge{
+    top: -6px;
+    left: 13px;
+  }
+}
+.notification{
+  @include size(20px, 25px);
+  @include btnService();
+  position: relative;
+  & >.badge{
+    top: 0;
+    left: 12px;
+  }
+}
+.badge{
+  position: absolute;
+  @include size(14px, 14px);
+  background: red;
+  color: #fff;
+  font-size: 13px;
+  // visibility: hidden;
+}
+.avatar{
+  @include size(48px, 48px);
+  @include btnService();
+  margin: 0 28px;
+  cursor: pointer;
+}
+.account-avatar-img{
+  @include border-radius(50%);
+}
+.select{
+  position: relative;
+  &:after{
+    content: '';
+    position: absolute;
+    width: 44px;
+    height: 0;
+    right: -35px;
+    top: 8px;
+    border: 1px solid $color-grey;
+    transform: rotate(90deg);
+  }
+}
+.account-select, .account-credit{
+  @include btnService();
+}
+.credit-img{
+  margin-right: 5px;
+}
+.credit-count{
+  color:$color-blue;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+// account
+
+.menu-btn {
+    padding: 0;
+    background: none;
+    border: none;
+    outline: none;
+    @include size(40px, 40px);
+    @include flexCenter;
+    display: none;
+
+    @include responsive(651px) {
+        display: flex;
+    } 
+}
+
+.account-menu {
+    transition: transform .2s ease-in-out;
+    @include responsive(651px) {
+      will-change: transform;
+      position: fixed;
+      left: 0;
+      top: 0;
+      @include size(230px, 100vh);
+      background: $background-color;
+      transform: translateX(-100%);
+    }
+}
+.account-menu--active {
+    @include responsive(651px) {
+        transform: translateX(0);
+    }
+}
+.account-list{
+  padding: 0;
+  @include responsive(651px) {
+    flex-flow: column nowrap;
+  }
+}
+.account-item{
+  transition: color .2s ease-in-out;
+  
+  &:first-child{
+    margin-right: 28px;
+  }
+  &:last-child{
+    margin-left: 28px;
+    margin-right: 0;
+  }
+}
