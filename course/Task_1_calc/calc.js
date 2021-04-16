@@ -57,12 +57,17 @@ class Calculate{
       return null;
     }
   }
-  getPercent(num, percent){
-    if(this.isNumber(num) && this.isNumber(percent) && 
-      num != null && percent != null && 
-      typeof num === 'number' && typeof percent === 'number'
+  getPercent(num1, num2){
+    if(this.isNumber(num1) && this.isNumber(num2) && 
+      num1 != null && num2 != null && 
+      typeof num1 === 'number' && typeof num2 === 'number'
       ){
-      return num*100/percent;
+      const result = num1*100/num2;
+      switch(true){
+        case ((result === Infinity)||(result === -Infinity)) : return null
+        case (result === -0) : return 0
+        default: return result
+      }
     }
     else{
       return null;
@@ -72,8 +77,13 @@ class Calculate{
 
 const newCalc = new Calculate();
 
-console.log(newCalc.add(4,true));
-console.log(newCalc.subtraction(2,4));
-console.log(newCalc.multiply(2,4));
-console.log(newCalc.division(22,7));
-console.log(newCalc.getPercent(2,4));
+console.log(newCalc.add(4, 5)); // 9
+console.log(newCalc.add(4)); // null
+console.log(newCalc.add(4, '4')); // null
+
+console.log(newCalc.subtraction(2, 4)); // -2
+console.log(newCalc.multiply(2, 4)); // 8
+console.log(newCalc.division(22, 7)); // 3.1428571428
+
+// получить, сколько составляет процент первого числа от второго  
+console.log(newCalc.getPercent(5, 10)); //50
