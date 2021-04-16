@@ -1,4 +1,3 @@
-// ДЗ
 // 1 получить данные через fetch https://jsonplaceholder.typicode.com/users
 // 2 вывести данные имя - номер телефона в виде списка (ul > li)
 
