@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <title>Shop</title>
+</head>
+<body>
+  <div id="app" class="container">
+    <!-- PRODUCTS LIST -->
+    <section class="products col-sm-6">
+      <h1 class="main-title">Products List</h1>
+      <div class="card" id="productsList"></div>
+    </section>
+    <!-- ../PRODUCTS LIST -->
+
+    <!-- CART -->
+    <section class="cart col-sm-6">
+      <div id="counter">Cart ( 0 )</div>
+      <p><button class="btn btn-primary" id="checkout">Open Cart</button></p>
+      <ul class="cart card-body" id="cart-content"></ul>
+      <div class="card-wrap">
+        <span>Total</span>
+        <span id="total">0</span>
+      </div>
+    </section>
+    <!-- ../CART -->
+  </div>
+  <script src="./app.js"></script>
+</body>
+</html>
