@@ -76,13 +76,18 @@
 		if(cartData.hasOwnProperty(item_id) && (cartData[item_id][2] <= item_avalaible)){ // if product is in the cart, change number of it
 			cartData[item_id][2] += 1;
 			// if product isn't in the cart, add it 
-		} else if(item_avalaible !=0 && cartData[item_id][2] <= item_avalaible) { 
+		} else if(item_avalaible !=0) { 
 				cartData[item_id] = [item_title, item_price, 1];	
-		}else {			
+		}
+		else if(item_avalaible === 0) {			
 			target.setAttribute('disabled', true);
 			alert('There is no such item...')
 		}
-
+		else {
+			target.setAttribute('disabled', true);
+			alert('There is no such item...')
+		}
+		
 		// update data LocalStorage
 		if(!saveCartData(cartData)){
 			CART.innerHTML = 'Product is added to cart!';
