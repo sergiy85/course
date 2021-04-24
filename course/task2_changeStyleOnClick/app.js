@@ -20,7 +20,7 @@
     function render() {
             let tasks_html = tasks.map(function(value, index) {
             return `
-                <div class="js_todo_item row" data-index="${index}">
+            <div class="js_todo_item row ${value.status ? 'line-through': ''}" data-index="${index}">
                     <div class="c5 js_item_text">${value.name}</div>
                     <div class="c2 js_item_action">
                         <button type="button" data-action="edit" title="Edit">!</button>
@@ -125,24 +125,18 @@
         } 
     });
     
-    for(const item of todo_items){
-        item.addEventListener('click', (event)=>{      
-            tasks.forEach((value)=>{
-                let str = `${event.target.textContent}`;
-                if(value.name === str && value.status === false){
-                    item.style.textDecoration = 'line-through';
-                    value.status = true;
-                    console.log(value.status);
-                    saveData();
-                }else if(value.name === str && value.status === true){
-                    item.style.textDecoration = 'none';
-                    value.status = false;
-                    console.log(value.status);
-                    saveData()
-                }
-                
-            })
+        app_el.addEventListener('click', (event)=>{
+            let target = event.target;
+            let todo_item = target.closest('.js_todo_item');
+            let index = Array.prototype.indexOf.call(todo_items, todo_item);
+            tasks[index].status = !tasks[index].status;
+            if(todo_item.classList.contains('line-through')){
+                todo_item.classList.remove('line-through');
+            }else{
+                todo_item.classList.add('line-through');
+            }
+            saveData();  
         })
-    }
+   
 
 })();
