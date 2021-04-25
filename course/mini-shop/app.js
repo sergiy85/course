@@ -4,17 +4,20 @@
 	const APP = document.getElementById('app');
 	const CARD_LIST = document.getElementById('productsList');
 	const CART = document.getElementById('cart-content'); 
-	const cartData = getCartData() || {}; // Get data cart or create new object (if there are not any data)
+	let cartData = getCartData() || {}; // Get data cart or create new object (if there are not any data)
 
 	const counter_el = document.getElementById('counter');
 	const total_el = document.getElementById('total');
 
 	let totalNum;
 	let totalPrice;
-	let card_count;
 
+	productsRender();
+	getCartData()
+	openCart();
+	
 	// Get vs watch products list
-	const productsRender = () =>{
+	function productsRender(){
 		fetch(PRODUCTS_LINK).then((response) => response.json()).then((data) => {
 			let item = '';
 			const items = []; 
@@ -39,7 +42,6 @@
 	
 		};
 
-	productsRender();
 
 	// Pattern - set event handler
 	function addEvent(element, type, handler){
@@ -55,9 +57,9 @@
 
 	// Get data from LocalStorage
 	function getCartData(){
-		// console.log(JSON.parse(localStorage.getItem('cart-content')));
 		return JSON.parse(localStorage.getItem('cart-content'));
 	}
+
 	// Set data to LocalStorage
 	function saveCartData(value){
 		localStorage.setItem('cart-content', JSON.stringify(value));
@@ -67,41 +69,46 @@
 
 	// Add product to cart
 	function addToCart(target){
+		
 			let	parent_element = CARD_LIST.querySelector(`.card-box-${target.id}`), // button's "Add" parent element
-				item_avalaible = CARD_LIST.querySelector(`.card-box-${target.id}`).getAttribute('data-id'), 
+				item_avalaible = Number(CARD_LIST.querySelector(`.card-box-${target.id}`).getAttribute('data-id')), 
 				item_id = target.id,
 				item_title = parent_element.querySelector('.card-title').innerHTML, // product name
 				item_price = parent_element.querySelector('.card-price').innerHTML; // product price
-
-		if(cartData.hasOwnProperty(item_id) && (cartData[item_id][2] <= item_avalaible)){ // if product is in the cart, change number of it
-			cartData[item_id][2] += 1;
-			// if product isn't in the cart, add it 
-		} else if(item_avalaible !=0) { 
-				cartData[item_id] = [item_title, item_price, 1];	
-		}
-		else if(item_avalaible === 0) {			
-			target.setAttribute('disabled', true);
-			alert('There is no such item...')
-		}
-		else {
-			target.setAttribute('disabled', true);
-			alert('There is no such item...')
-		}
-		
+				
+				if(!cartData.hasOwnProperty(item_id) && item_avalaible !=0){
+					cartData[item_id] = [item_title, item_price, 0, item_avalaible];	
+				}
+				
+				// if product is in the cart, change number of it
+				
+				if(cartData.hasOwnProperty(item_id) 
+					&& (cartData[item_id][2] < item_avalaible) 
+					&& (item_avalaible != 0)){ 
+					
+					cartData[item_id][2] += 1;
+					count(cartData);
+					getTotal(cartData);					
+				}
+				if(cartData[item_id][2] == null){
+					cartData[item_id][2] = 0;
+				}
+				
+				if(cartData[item_id][2] === item_avalaible){
+					target.setAttribute('disabled', true);
+					
+				}
+						
+				count(cartData);
+				getTotal(cartData);					
 		// update data LocalStorage
 		if(!saveCartData(cartData)){
 			CART.innerHTML = 'Product is added to cart!';
-			// openCart();
 		} 
-		count(cartData);
-		getTotal(cartData);
+		openCart();
 		return false;
 	}
 
-	addEvent(CARD_LIST, 'click', function(event) {
-		let target = event.target;
-		addToCart(target);
-	});
 	
 	// get data from the cart
 	function openCart(){
@@ -111,7 +118,9 @@
 				product_name,
 				product_count,
 				product_price,
+				product_avalaible,
 				result;			
+				
 		// data for output
 		if(items !== null){
 				for(let item in items){
@@ -119,14 +128,19 @@
 					product_name = items[item][0];
 					product_price = +items[item][1];
 					product_count = items[item][2];
+					product_avalaible = items[item][3];
 					result = product_price*product_count;
 					if(result<0){
 						result = 0;
 					}
-					item_html += `
-							<li class="card-text card-item">
+					if(product_count == null){
+						product_count = 0;
+					}
+					if(product_avalaible !=0 && product_count !=0){
+						item_html += `
+							<li class="card-text card-item" data-target="${product_avalaible}">
 								<div class="card-wrap">
-									<span class="card-text">${product_name}</span>
+									<span class="card-text card-name">${product_name}</span>
 									<div>
 										<span>$</span>
 										<span class="card-text card-price">${result.toFixed(2)}</span>
@@ -138,16 +152,19 @@
 							</li>
 						<hr/>`;
 				}
+				
 			CART.innerHTML = item_html;
+					}
+					
 		}else {
 			CART.innerHTML = 'Cart is empty!';
 		}
 		count(cartData);
-		getTotal(cartData);	
+		getTotal(cartData);
+		
 		return false;
 	}
 
-	openCart();
 
 	function count(value){
 		const _items = Object.values(value);
@@ -160,7 +177,7 @@
 				return sum + current;
 			});
 
-			if(totalNum < 0){
+			if(totalNum < 0 || totalNum === null){
 				totalNum = 0;
 			}	
 		}	
@@ -181,7 +198,7 @@
 				return sum + current;
 			});
 
-			if(totalPrice<0){
+			if(totalPrice < 0 || totalPrice === null){
 				totalPrice = 0;
 			}
 
@@ -191,11 +208,9 @@
 		total_el.innerHTML = 	`$ ${totalPrice.toFixed(2)} `;
 	}
 
-	getTotal(cartData);
-	count(cartData);
 
 	/* Open the cart */
-	addEvent(document.getElementById('checkout'), 'click', openCart);
+	// addEvent(document.getElementById('checkout'), 'click', openCart);
 
 	/* Update the cart */
 	function updateCartData(){
@@ -218,55 +233,89 @@
 		saveCartData(cartData);
 	}
 
-	function removeItem() {
-		const arr = Object.values(cartData);
-		for(let i=0; i<arr.length; i++){
-			if(arr[i][2] < 1){
-				arr.splice(i, 1);
-			}
+	// Add item to LocalStorage and html render
+	addEvent(CARD_LIST, 'click', function(event) {
+		let target = event.target;
+		// If  available = 0, don't add to cart
+		if(target.parentElement.dataset.id === '0'){
+			alert('There is no such item...');
+			return false;
 		}
-		return arr;
-	}
+		else{ 
+			addToCart(target);
+		}
+	});
+	
 
 	CART.addEventListener('click', function(event) {
 		let target = event.target;
 		let id = target.id.slice(4);
 
-		card_count = document.getElementById(`count-${id}`);
+		let card_count = document.getElementById(`count-${id}`);
+		const name = target.parentElement.querySelector('.card-name').innerHTML;
+		let price_html = target.parentElement.querySelector('.card-price');
+
 		let card_count_value = card_count.innerHTML;
+		let card_price_value = price_html.innerHTML;
 		
+		const cart = Object.values(cartData);
+		
+		let price_item;
+		let get_count_value_from_cart;
+
+		for(let i=0; i<cart.length; i++){
+			if(cart[i][0] == name){
+				get_count_value_from_cart = cart[i][2];
+				price_item = cart[i][1];
+		  }
+		}
+
 		switch(target.dataset.action) {
 			case 'plus':
-				card_count.innerHTML = +card_count_value + 1;
+				let card_available = card_count.parentElement.dataset.target; // define available parent element
+				
+				if(card_count.innerHTML !== card_available || card_count.innerHTML < card_available){
+					card_count.innerHTML = +card_count_value + 1;
+					price_html.innerHTML = (Number(card_price_value) + Number(price_item)).toFixed(2);
+					getTotal(cartData);
+					count(cartData);
+				}
+
+				if(get_count_value_from_cart === +card_available){
+					card_count.innerHTML = +card_count_value;
+					price_html.innerHTML = card_price_value;
+				}
+				
 				updateCartData()
 				break;
 			case 'minus':
-				target.setAttribute('disabled', true);
 				card_count.innerHTML = +card_count_value - 1;
-				let newCartData;
+				price_html.innerHTML = (Number(card_price_value) - Number(price_item)).toFixed(2); 
+				counter_el.innerHTML = +counter_el.innerHTML - 1;
+				total_el.innerHTML = Number(total_el.innerHTML - Number(price_item));
+
 				if(+card_count.innerHTML < 1){
 					target.setAttribute('disabled', true);
-					card_count.innerHTML = '0';
+					card_count.innerHTML = '';
 					card_count.parentElement.style.display='none';
-					newCartData = removeItem();
+					localStorage.clear();
 				}else{
 					target.removeAttribute('disabled');
 				}
+				
 				updateCartData();
-				saveCartData(newCartData);
-				// console.log(cartData);
 				break;
+			
 			default:	
 				break;
 		}
 			
 	});
 
+
 	window.addEventListener('storage', function(event) {
-		if (event.key === 'cart-content') {
-			console.log(event);
-		}
+	  console.log(event);
 	});
 	
+	
 })();
-
