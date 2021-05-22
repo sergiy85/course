@@ -196,31 +196,6 @@ const App = props => {
   );
 };
 
-// hoc
-// const withName = WrappedComponent => {
-//   const name = 'React';
-//   const hocComponent = ({ ...props }) => (
-//     <WrappedComponent {...props} name={name} />
-//   );
-
-//   return hocComponent;
-// };
-
-// custom hook
-// const useTodos = () => {
-//   const [todos, setTodos] = useState([]);
-
-//   useEffect(() => {
-//     (async () => {
-//       const list = await fetch('/todos.json').then(res => res.json());
-
-//       setTodos(list);
-//     })();
-//   }, []);
-
-//   return todos;
-// };
-
 const mapStateToProps = state => ({
   fetching: state.fetching,
   todos: state.todos,
