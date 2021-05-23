@@ -36,15 +36,26 @@ const App = props => {
  
   // search   
   const [searchKey, setSearchKey] = useState('');
-  // const todosProgress = useSelector(props => props.todos.in_progress);
+  const todosProgress = useSelector(state => state.todos?.in_progress || []);
+  const todosDone = useSelector(state => state.todos?.done || []);
   
-  // const filteredTodos = useMemo(() =>{
-  //   return todosProgress.filter(item =>{
-  //       return item.name.toLowerCase().includes(searchKey.toLowerCase())
-  //     }
-  //   );
-  // }, [todosProgress, searchKey]);
+  // filtered progress
+  const filteredTodosProgress = useMemo(() =>{
+    return todosProgress.filter(item =>{
+      if(searchKey.length >= 3) return item.name.toLowerCase().includes(searchKey.toLowerCase());
+      return [];
+      }
+    );
+  }, [todosProgress, searchKey]);
   
+  // filtered done
+  const filteredTodosDone = useMemo(() =>{
+    return todosDone.filter(item =>{
+      if(searchKey.length >= 3) return item.name.toLowerCase().includes(searchKey.toLowerCase());
+      return [];
+      }
+    );
+  }, [todosDone, searchKey]);
   
   // add new todo 
   const sendInputValue = () => {
@@ -53,7 +64,6 @@ const App = props => {
     addInputRef.current.value = '';
   }
   
- 
   const renderDoneItem = ({ name, finishedTime }) => (
     <>
       <span className='badge'>
@@ -64,9 +74,9 @@ const App = props => {
   );
   
   const renderInProgressItem = ({ id, name, ...todos }) =>{
-    if(todos.isActive === true && props.todos.in_progress[0].id=== id) return (<>{name}</>);
+    if(todos.isActive === true && filteredTodosProgress?.[0].id=== id) return (<>{name}</>);
 
-    if(todos.isActive === false && props.todos.in_progress[1].id === id) return (
+    if(todos.isActive === false && filteredTodosProgress?.[1]?.id === id) return (
         <>
           {name}
           <button 
@@ -89,21 +99,7 @@ const App = props => {
           </button>               
         </>
       );
-
-    if(props.todos.in_progress.length === 1) return (
-      <>
-        {name}
-        <button 
-            type='button' 
-            className='btn btn-danger'
-            onClick={() => {
-              makeActive(id);
-          }}>
-          Coplete
-        </button>
-      </>
-    );
-
+    
     return (
       <>
         {name}
@@ -159,7 +155,7 @@ const App = props => {
             loading
           ) : (
             <List>
-              {todos.in_progress.map(item => {
+              {filteredTodosProgress.map(item => {
                 const { id } = item;
                 return (
                   <ListItem
@@ -172,7 +168,7 @@ const App = props => {
             </List>
           )}
           <p>
-            Things to do: {(fetching) ? (loading) : (todos.in_progress.length)}
+            Things to do: {(fetching) ? (loading) : (filteredTodosProgress.length)}
           </p>
         </div>
         <div className='col-xs-12 col-sm-6'>
@@ -182,19 +178,20 @@ const App = props => {
             loading
           ) : (
             <List>
-              {todos.done.map(({ id, ...item }) => (
+              {filteredTodosDone.map(({ id, ...item }) => (
                 <ListItem key={id} item={item} render={renderDoneItem} />
               ))}
             </List>
           )}
           <p>
-            Done: {(fetching) ? (loading) : (todos.done.length)}
+            Done: {(fetching) ? (loading) : (filteredTodosDone.length)}
           </p>
         </div>
       </div>
     </div>
   );
 };
+
 
 const mapStateToProps = state => ({
   fetching: state.fetching,
@@ -219,3 +216,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(App);
+
