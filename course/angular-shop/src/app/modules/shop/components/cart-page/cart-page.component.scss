@@ -1,0 +1,20 @@
+.page-flex{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.card-wrap{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.btn-count{
+  color: #007bff;
+  border-color: #007bff;
+  cursor: pointer;
+}
+.btn-count:hover{
+  color: #fff;
+  background-color: #007bff;
+}

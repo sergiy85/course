@@ -1,0 +1,15 @@
+<div class="container card-flex" *ngIf="!loading && products">
+  <div class="card margin-0-auto" *ngFor="let product of products">
+    <h5 class="card-header">{{ product.name }}</h5>
+    <div class="card-body">
+      <p class="card-text">Short Description</p>
+      <p class="card-text card-price">{{product.price | currency}}</p>
+      <button (click)="addToCart(product)" class="btn btn-primary">Add to Cart</button>
+    </div>
+  </div>  
+</div>
+
+<a href="#" class="cart" routerLink="/shop/cart">
+  <span class="icon"> 🛒</span>
+</a>
+

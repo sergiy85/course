@@ -1,0 +1,29 @@
+<div class="container page-flex">
+  <!-- CART CONPONENT -->
+  <section class="cart col-sm-6">
+    <h3 class="title" id="counter">Cart ( {{count}} )</h3>
+    <ul class="cart card-body" id="cart-content" *ngFor="let item of items">
+      <li class="card-text card-item">
+        <div class="card-wrap">
+          <span class="card-text card-name">{{item.name}}</span>
+          <div>
+            <span class="card-text card-price">{{ item.price | currency }}</span>
+          </div>
+        </div>
+        <button type="button" (click)="add(item)" class="btn-count js_counter"> + </button>
+        <button type="button" (click)="remove(item)" class="btn-count js_counter"> - </button>
+        <span class="card-text card-count">{{ item.quantity }}</span>
+      </li>
+    </ul>
+    <div class="card-wrap">
+      <span>Total</span>
+      <span id="total">{{total}}</span>
+    </div>
+  </section>
+
+  <!-- CHECKOUT COMPONENT -->
+  <section class="checkout col-sm-6">
+    <app-checkout-page></app-checkout-page>
+  </section>
+  
+</div>

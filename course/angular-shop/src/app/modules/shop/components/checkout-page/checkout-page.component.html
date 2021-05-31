@@ -1,0 +1,66 @@
+  <form [formGroup]="formGroup">
+    <fieldset>
+      <legend>
+        <h3>Register</h3>
+      </legend> 
+      <div class="form-group">
+        <label>
+          Name:
+          <input type="text" class="form-control" formControlName="name">
+          <span 
+            *ngIf="formGroup.get('name').hasError('required') && formGroup.get('name').dirty"
+            class="alert alert-danger alert-width">
+            Name is required! 
+          </span>
+        </label>
+        <label>
+          Surname:
+          <input type="text" class="form-control" formControlName="surname">
+          <span 
+            *ngIf="formGroup.get('surname').hasError('required') && formGroup.get('surname').dirty"
+            class="alert alert-danger alert-width">
+            Surname is required!
+          </span>
+        </label>  
+        <label>
+          E-mail:
+          <input type="text" class="form-control" formControlName="email">
+          <span 
+            *ngIf="formGroup.get('email').hasError('required') && formGroup.get('email').dirty"
+            class="alert alert-danger alert-width">
+            Email is required!
+          </span>
+          <span 
+            *ngIf="formGroup.get('email').hasError('email')"
+            class="alert alert-danger alert-width">
+            Email is error!
+          </span>
+        </label>
+        <label>
+          Phone:
+          <input type="text" class="form-control" placeholder="+3800-000-00-00" formControlName="tel">
+          <span 
+            *ngIf="formGroup.get('tel').hasError('required') 
+            && formGroup.get('tel').dirty"
+            class="alert alert-danger alert-width">
+            Phone is required!
+          </span>
+          <span 
+            *ngIf="formGroup.get('tel').hasError('pattern')"
+            class="alert alert-danger alert-width">
+             is error.
+          </span>
+        </label>
+        
+      </div>
+  
+      <button 
+        type="submit"
+        class="btn btn-default"
+        (click) = "onSubmit(formGroup.value, formGroup.valid)"
+        [disabled]="formGroup.invalid">
+        Submit
+      </button>
+    </fieldset>
+  </form>
+
