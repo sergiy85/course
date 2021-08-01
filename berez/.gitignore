@@ -13,17 +13,5 @@
 wp-admin/
 wp-includes/
 
-wp-content/*
-!wp-content/themes/
-wp-content/themes/*
-
-!wp-content/plugins/
-wp-content/plugins/*
-
-!wp-content/themes/ei/
-!wp-content/themes/ei-child/
-
-!wp-content/plugins/realty-export
-
 # Frontend tools
 wp-content/themes/ei-child/node_modules/
